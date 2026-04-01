@@ -31,4 +31,4 @@ If you wish to run this dashboard on your local machine, follow these steps:
 
 1. Clone this repository:
    ```bash
-   git clone [https://github.com/MoSaizanCoder/Amazon-Prime-Data-Analysis.git](https://github.com/MoSaizanCoder/Amazon-Prime-Data-Analysis.git)
+   git clone https://github.com/MoSaizanCoder/Amazon-Prime-Data-Analysis.git
