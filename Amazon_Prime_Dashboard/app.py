@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import ast
+import os
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -39,8 +40,16 @@ def format_axes(ax, xlabel, ylabel):
 # ==========================================
 @st.cache_data
 def load_and_clean_data():
-    titles = pd.read_csv('titles.csv')
-    credits = pd.read_csv('credits.csv')
+    # Yeh automatically us folder ka path nikal lega jahan app.py rakhi hai
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+    # Ab files ka exact path banayiye
+    titles_path = os.path.join(BASE_DIR, 'titles.csv')
+    credits_path = os.path.join(BASE_DIR, 'credits.csv')
+
+    # Read the data using the absolute paths
+    titles = pd.read_csv(titles_path)
+    credits = pd.read_csv(credits_path)
 
     titles.drop_duplicates(inplace=True)
     credits.drop_duplicates(inplace=True)
