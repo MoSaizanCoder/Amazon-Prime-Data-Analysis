@@ -10,7 +10,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ==========================================
-# PAGE CONFIGURATION (Must be the first Streamlit command)
+# PAGE CONFIGURATION
 # ==========================================
 st.set_page_config(page_title="Amazon Prime EDA", page_icon="🎬", layout="wide")
 
@@ -21,7 +21,7 @@ with st.sidebar:
     st.header("👨‍💻 About the Developer")
     st.markdown("**Mohammad Saizan Ansari**")
     st.markdown("B.Tech in AI & Data Science (2025)")
-    st.markdown("[LinkedIn](Insert_Your_LinkedIn_Link) | [GitHub](Insert_Your_GitHub_Link)")
+    st.markdown("[LinkedIn](https://www.linkedin.com/in/saizan-ansari) | [GitHub](https://github.com/MoSaizanCoder)")
     st.divider()
 
 # ==========================================
@@ -46,7 +46,6 @@ def clean_list_column(row):
         return ['Unknown']
 
 def format_axes(ax, xlabel, ylabel):
-    """Helper to capitalize and bold x and y labels for matplotlib/seaborn charts"""
     ax.set_xlabel(xlabel.upper(), fontweight='bold')
     ax.set_ylabel(ylabel.upper(), fontweight='bold')
 
@@ -103,7 +102,8 @@ try:
             for container in ax1.containers:
                 ax1.bar_label(container, padding=3)
             format_axes(ax1, 'Content Type', 'Count')
-            st.pyplot(fig1)
+            fig1.tight_layout() # Added for size fixing
+            st.pyplot(fig1, use_container_width=True) # Added use_container_width
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** The total volume of Movies versus TV Shows available on the platform.
@@ -116,7 +116,8 @@ try:
             rating_counts = rated_content['age_certification'].value_counts().head(5)
             fig2, ax2 = plt.subplots(figsize=(8, 5))
             ax2.pie(rating_counts.values, labels=rating_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))
-            st.pyplot(fig2)
+            fig2.tight_layout() # Added for size fixing
+            st.pyplot(fig2, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** The top 5 most common age ratings across all categorized content.
@@ -136,7 +137,8 @@ try:
             for container in ax3.containers:
                 ax3.bar_label(container, padding=3)
             format_axes(ax3, 'Count', 'Genre')
-            st.pyplot(fig3)
+            fig3.tight_layout() # Added for size fixing
+            st.pyplot(fig3, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** The most frequently occurring genres in the dataset.
@@ -149,7 +151,8 @@ try:
             fig4, ax4 = plt.subplots(figsize=(8, 5))
             sns.histplot(data=recent_content, x='release_year', kde=True, color='teal', bins=23, ax=ax4)
             format_axes(ax4, 'Release Year', 'Content Added')
-            st.pyplot(fig4)
+            fig4.tight_layout() # Added for size fixing
+            st.pyplot(fig4, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** The timeline of content releases over the last two decades.
@@ -171,7 +174,8 @@ try:
             fig5, ax5 = plt.subplots(figsize=(8, 5))
             sns.boxplot(data=Amazon_titles[Amazon_titles['imdb_score']>0], x='type', y='imdb_score', palette='Set2', ax=ax5)
             format_axes(ax5, 'Content Type', 'IMDb Score')
-            st.pyplot(fig5)
+            fig5.tight_layout() # Added for size fixing
+            st.pyplot(fig5, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** The distribution and outliers of IMDb ratings split by content type.
@@ -184,7 +188,8 @@ try:
             fig6, ax6 = plt.subplots(figsize=(8, 5))
             sns.histplot(data=df_filtered, x='runtime', hue='type', kde=True, bins=30, palette='viridis', element='step', ax=ax6)
             format_axes(ax6, 'Runtime (Minutes)', 'Frequency')
-            st.pyplot(fig6)
+            fig6.tight_layout() # Added for size fixing
+            st.pyplot(fig6, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** How long content typically lasts, comparing movies to TV episodes.
@@ -204,7 +209,8 @@ try:
             sns.barplot(x=top_quality_actors['mean'], y=top_quality_actors.index, palette='plasma', ax=ax7)
             ax7.set_xlim(6.5, 9.5)
             format_axes(ax7, 'Average IMDb Score', 'Actor Name')
-            st.pyplot(fig7)
+            fig7.tight_layout() # Added for size fixing
+            st.pyplot(fig7, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** Actors who consistently appear in highly-rated content.
@@ -218,7 +224,8 @@ try:
             fig8, ax8 = plt.subplots(figsize=(8, 5))
             sns.boxplot(data=df_age_quality, x='age_certification', y='imdb_score', order=target_ratings, palette='coolwarm', ax=ax8)
             format_axes(ax8, 'Age Certification', 'IMDb Score')
-            st.pyplot(fig8)
+            fig8.tight_layout() # Added for size fixing
+            st.pyplot(fig8, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** Whether restricted or family-friendly content receives better ratings.
@@ -243,7 +250,10 @@ try:
                 color='type', hover_name='title', size_max=40, opacity=0.6, template='plotly_white'
             )
             fig_bubble.add_shape(type="line", x0=0, y0=0, x1=10, y1=10, line=dict(color="Red", width=2, dash="dash"))
+            
+            # Locked height to 450 to match Matplotlib charts
             fig_bubble.update_layout(
+                height=450, 
                 xaxis_title="<b>IMDB SCORE</b>", yaxis_title="<b>TMDB SCORE</b>",
                 margin=dict(l=0, r=0, t=30, b=0)
             )
@@ -261,7 +271,8 @@ try:
             fig10, ax10 = plt.subplots(figsize=(8, 5))
             sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=0.5, ax=ax10)
             format_axes(ax10, 'Features', 'Features')
-            st.pyplot(fig10)
+            fig10.tight_layout() # Added for size fixing
+            st.pyplot(fig10, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** Linear relationships between all numerical variables in the dataset.
@@ -279,7 +290,8 @@ try:
             sns.lineplot(data=df_trend, x='release_year', y='imdb_score', hue='type', palette='tab10', marker='o', ax=ax11)
             ax11.axhline(y=6.0, color='gray', linestyle='--', label='Baseline')
             format_axes(ax11, 'Release Year', 'Average IMDb Score')
-            st.pyplot(fig11)
+            fig11.tight_layout() # Added for size fixing
+            st.pyplot(fig11, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** How the average quality of released content has shifted year over year.
@@ -293,7 +305,8 @@ try:
             fig12, ax12 = plt.subplots(figsize=(8, 5))
             sns.barplot(data=df_pop, x='age_certification', y='tmdb_popularity', hue='type', palette='Set1', errorbar=None, ax=ax12)
             format_axes(ax12, 'Age Certification', 'Average TMDB Popularity')
-            st.pyplot(fig12)
+            fig12.tight_layout() # Added for size fixing
+            st.pyplot(fig12, use_container_width=True)
             with st.expander("Explanation"):
                 st.markdown("""
                 - **What it represents:** The average TMDB popularity metrics across major age demographics, split by content type.
