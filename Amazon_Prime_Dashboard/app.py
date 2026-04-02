@@ -10,11 +10,33 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ==========================================
-# PAGE CONFIGURATION
+# PAGE CONFIGURATION (Must be the first Streamlit command)
 # ==========================================
 st.set_page_config(page_title="Amazon Prime EDA", page_icon="🎬", layout="wide")
+
+# ==========================================
+# PORTFOLIO SIDEBAR
+# ==========================================
+with st.sidebar:
+    # Optional profile icon
+    st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=100) 
+    st.title("Mohammad Saizan Ansari")
+    st.write("B.Tech in AI & Data Science | 2025")
+    
+    st.markdown("---")
+    st.header("🔗 Let's Connect")
+    # Paste your actual profile links here
+    st.markdown("[LinkedIn](Insert_Your_LinkedIn_Link)")
+    st.markdown("[GitHub](Insert_Your_GitHub_Link)")
+    st.markdown("[Portfolio](Insert_Your_Portfolio_Link)")
+    st.markdown("---")
+
+# ==========================================
+# MAIN DASHBOARD HEADER
+# ==========================================
 st.title("🎬 Amazon Prime Video: Comprehensive EDA")
 st.markdown("A structured Exploratory Data Analysis divided into Univariate, Bivariate, and Multivariate insights.")
+st.markdown("---")
 
 # ==========================================
 # HELPER FUNCTIONS
@@ -40,10 +62,10 @@ def format_axes(ax, xlabel, ylabel):
 # ==========================================
 @st.cache_data
 def load_and_clean_data():
-    # Yeh automatically us folder ka path nikal lega jahan app.py rakhi hai
+    # Automatically get the directory path where app.py is located
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     
-    # Ab files ka exact path banayiye
+    # Construct the exact absolute paths for the data files
     titles_path = os.path.join(BASE_DIR, 'titles.csv')
     credits_path = os.path.join(BASE_DIR, 'credits.csv')
 
@@ -209,7 +231,6 @@ with tab3:
     with r5_col2:
         st.subheader("2. Correlation Heatmap")
         numeric_df = Amazon_titles.select_dtypes(include=['float64', 'int64'])
-        # Drop ID or year if they skew the heatmap unnecessarily, but keeping standard for now
         corr_matrix = numeric_df[['release_year', 'runtime', 'imdb_score', 'imdb_votes', 'tmdb_popularity', 'tmdb_score']].corr()
         fig10, ax10 = plt.subplots(figsize=(8, 5))
         sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=0.5, ax=ax10)
@@ -234,9 +255,3 @@ with tab3:
     with r6_col2:
         st.subheader("4. Popularity by Age Rating and Type")
         target_ratings = ['PG-13', 'R', 'TV-14', 'TV-MA']
-        df_pop = Amazon_titles[Amazon_titles['age_certification'].isin(target_ratings)]
-        fig12, ax12 = plt.subplots(figsize=(8, 5))
-        sns.barplot(data=df_pop, x='age_certification', y='tmdb_popularity', hue='type', palette='Set1', errorbar=None, ax=ax12)
-        format_axes(ax12, 'Age Certification', 'Average TMDB Popularity')
-        st.pyplot(fig12)
-        st.info("**What it represents:** The average TMDB popularity metrics across major age demographics, split by content type.\n\n**Key Finding:** TV-MA TV shows generate vastly higher popularity and engagement compared to equivalently rated Movies.")
